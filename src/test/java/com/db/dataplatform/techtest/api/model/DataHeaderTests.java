@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.db.dataplatform.techtest.TestDataHelper.TEST_NAME;
+import static com.db.dataplatform.techtest.TestDataHelper.MD5_CHECKSUM;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -14,7 +15,7 @@ public class DataHeaderTests {
 
     @Test
     public void assignDataHeaderFieldsShouldWorkAsExpected() {
-        DataHeader dataHeader = new DataHeader(TEST_NAME, BlockTypeEnum.BLOCKTYPEA);
+        DataHeader dataHeader = new DataHeader(TEST_NAME, BlockTypeEnum.BLOCKTYPEA, MD5_CHECKSUM);
 
         assertThat(dataHeader.getName()).isEqualTo(TEST_NAME);
         assertThat(dataHeader.getBlockType()).isEqualTo(BlockTypeEnum.BLOCKTYPEA);

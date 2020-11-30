@@ -4,6 +4,7 @@ import com.db.dataplatform.techtest.server.persistence.model.DataBodyEntity;
 import com.db.dataplatform.techtest.server.persistence.model.DataHeaderEntity;
 import com.db.dataplatform.techtest.server.persistence.repository.DataStoreRepository;
 import com.db.dataplatform.techtest.server.service.DataBodyService;
+import com.db.dataplatform.techtest.server.service.DataHeaderService;
 import com.db.dataplatform.techtest.server.service.impl.DataBodyServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,8 @@ public class DataBodyServiceTests {
     @Mock
     private DataStoreRepository dataStoreRepositoryMock;
 
+    @Mock
+    private DataHeaderService dataHeaderService;
     private DataBodyService dataBodyService;
     private DataBodyEntity expectedDataBodyEntity;
 
@@ -35,7 +38,7 @@ public class DataBodyServiceTests {
         DataHeaderEntity testDataHeaderEntity = createTestDataHeaderEntity(Instant.now());
         expectedDataBodyEntity = createTestDataBodyEntity(testDataHeaderEntity);
 
-        dataBodyService = new DataBodyServiceImpl(dataStoreRepositoryMock);
+        dataBodyService = new DataBodyServiceImpl(dataStoreRepositoryMock, dataHeaderService);
     }
 
     @Test

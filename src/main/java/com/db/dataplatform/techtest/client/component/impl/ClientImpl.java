@@ -2,12 +2,25 @@ package com.db.dataplatform.techtest.client.component.impl;
 
 import com.db.dataplatform.techtest.client.api.model.DataEnvelope;
 import com.db.dataplatform.techtest.client.component.Client;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Client code does not require any test coverage
@@ -22,15 +35,34 @@ public class ClientImpl implements Client {
     public static final UriTemplate URI_GETDATA = new UriTemplate("http://localhost:8090/dataserver/data/{blockType}");
     public static final UriTemplate URI_PATCHDATA = new UriTemplate("http://localhost:8090/dataserver/update/{name}/{newBlockType}");
 
+    private final RestTemplate restTemplate;
+    
     @Override
     public void pushData(DataEnvelope dataEnvelope) {
         log.info("Pushing data {} to {}", dataEnvelope.getDataHeader().getName(), URI_PUSHDATA);
+        try {
+            Boolean response = restTemplate.postForObject(URI_PUSHDATA, dataEnvelope, Boolean.class);
+        	log.info("server response: "+ response);
+        } catch (RestClientException e) {
+        	log.error("Error while pushing data {}",e.getMessage());
+        }
     }
 
     @Override
     public List<DataEnvelope> getData(String blockType) {
         log.info("Query for data with header block type {}", blockType);
-        return null;
+        Map<String, String> params = new HashMap<>();
+        
+        params.put("blockType", blockType);
+        HttpHeaders headers = new HttpHeaders();
+        List <MediaType> accepts = new LinkedList<>();
+        accepts.add(MediaType.APPLICATION_JSON);
+        headers.setAccept(accepts);
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        ResponseEntity<List<DataEnvelope>> response = restTemplate.exchange(URI_GETDATA.expand(params)
+        		,HttpMethod.GET, entity, new ParameterizedTypeReference<List<DataEnvelope>>() {
+        });
+        return response.getBody();
     }
 
     @Override

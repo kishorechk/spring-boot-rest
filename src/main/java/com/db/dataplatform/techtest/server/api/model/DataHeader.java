@@ -21,4 +21,6 @@ public class DataHeader {
 
     private BlockTypeEnum blockType;
 
+    @NotBlank
+    private String checksum;
 }

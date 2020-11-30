@@ -23,6 +23,7 @@ public class DataHeaderServiceTests {
     @Mock
     private DataHeaderRepository dataHeaderRepositoryMock;
 
+    @Mock
     private DataHeaderService dataHeaderService;
     private DataHeaderEntity expectedDataHeaderEntity;
 
