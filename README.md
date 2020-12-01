@@ -1,5 +1,7 @@
 # spring-boot-rest
 
+This project is to showcase Spring Boot, Microservices and REST APIs.
+
 ## Sequence Diagram
 ![sequence](./images/sequence.png)
 
