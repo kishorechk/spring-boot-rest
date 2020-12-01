@@ -9,6 +9,7 @@ import com.db.dataplatform.techtest.server.service.ChecksumService;
 import com.db.dataplatform.techtest.server.service.DataBodyService;
 import com.db.dataplatform.techtest.server.component.Server;
 import com.db.dataplatform.techtest.server.persistence.BlockTypeEnum;
+import com.db.dataplatform.techtest.server.service.HadoopClientService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +31,7 @@ public class ServerImpl implements Server {
 
     private final ChecksumService checksumService;
 
+    private final HadoopClientService hadoopService;
     /**
      * @param envelope
      * @return true if there is a match with the client provided checksum.
@@ -41,6 +44,8 @@ public class ServerImpl implements Server {
         if(checksumPass) {
             // Save to persistence.
             persist(envelope);
+            //push to hadoop
+            hadoopService.sendDataToHadoop(envelope);
             log.info("Data persisted successfully, data name: {}", envelope.getDataHeader().getName());
         } else {
             log.info("Data not persisted due to invalid checksum, data name: {}"
@@ -62,6 +67,16 @@ public class ServerImpl implements Server {
 				modelMapper.map(dataBodyEntity.getDataHeaderEntity(), DataHeader.class),
 				modelMapper.map(dataBodyEntity, DataBody.class))).collect(Collectors.toList());
 	}
+
+    @Override
+    public boolean updateBlockTypeByBlockName(String blockName, BlockTypeEnum blockType) {
+        Optional<DataBodyEntity> dataBodyEntityBox = dataBodyServiceImpl.getDataByBlockName(blockName);
+        if(!dataBodyEntityBox.isPresent()) return false;
+        DataBodyEntity dataBodyEntity = dataBodyEntityBox.get();
+        dataBodyEntity.getDataHeaderEntity().setBlocktype(blockType);
+        saveData(dataBodyEntity);
+        return true;
+    }
 
     private void persist(DataEnvelope envelope) {
         log.info("Persisting data with attribute name: {}", envelope.getDataHeader().getName());

@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface DataStoreRepository extends JpaRepository<DataBodyEntity, Long> {
     List<DataBodyEntity> findByDataHeaderEntityIn(List<DataHeaderEntity> dataHeaderEntities);
+    DataBodyEntity findByDataHeaderEntity(DataHeaderEntity dataHeaderEntity);
 }

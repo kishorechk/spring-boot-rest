@@ -8,6 +8,8 @@ import com.db.dataplatform.techtest.server.service.ChecksumService;
 import com.db.dataplatform.techtest.server.service.DataBodyService;
 import com.db.dataplatform.techtest.server.component.Server;
 import com.db.dataplatform.techtest.server.component.impl.ServerImpl;
+import com.db.dataplatform.techtest.server.service.HadoopClientService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,9 @@ public class ServerServiceTests {
     @Mock
     private DataBodyService dataBodyServiceImplMock;
 
+    @Mock
+    private HadoopClientService hadoopClientServiceMock;
+
     private ModelMapper modelMapper;
 
     private DataBodyEntity expectedDataBodyEntity;
@@ -50,7 +55,7 @@ public class ServerServiceTests {
         expectedDataBodyEntity = modelMapper.map(testDataEnvelope.getDataBody(), DataBodyEntity.class);
         expectedDataBodyEntity.setDataHeaderEntity(modelMapper.map(testDataEnvelope.getDataHeader(), DataHeaderEntity.class));
 
-        server = new ServerImpl(dataBodyServiceImplMock, modelMapper, checksumServiceMock);
+        server = new ServerImpl(dataBodyServiceImplMock, modelMapper, checksumServiceMock, hadoopClientServiceMock);
     }
 
     @Test

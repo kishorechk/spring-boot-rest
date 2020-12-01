@@ -68,7 +68,11 @@ public class ClientImpl implements Client {
     @Override
     public boolean updateData(String blockName, String newBlockType) {
         log.info("Updating blocktype to {} for block with name {}", newBlockType, blockName);
-        return true;
+        Map<String, String> params = new HashMap<>();
+        params.put("name", blockName);
+        params.put("newBlockType", newBlockType);
+        Boolean result = restTemplate.patchForObject(URI_PATCHDATA.expand(params),null, Boolean.class);
+        return result;
     }
 
 

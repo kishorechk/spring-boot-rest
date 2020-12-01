@@ -33,6 +33,11 @@ public class DataBodyServiceImpl implements DataBodyService {
 
     @Override
     public Optional<DataBodyEntity> getDataByBlockName(String blockName) {
-        return null;
+        DataBodyEntity dataBodyEntity = null;
+        DataHeaderEntity dataHeaderEntity = dataHeaderService.getHeaderByBlockName(blockName);
+        if(dataHeaderEntity!=null) {
+            dataBodyEntity = dataStoreRepository.findByDataHeaderEntity(dataHeaderEntity);
+        }
+        return Optional.ofNullable(dataBodyEntity);
     }
 }

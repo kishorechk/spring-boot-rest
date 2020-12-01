@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,14 +37,13 @@ public class ServerController {
 
     @PostMapping(value = "/pushdata", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> pushData(@Valid @RequestBody DataEnvelope dataEnvelope) throws IOException, NoSuchAlgorithmException {
-        log.info("Data envelope received: {}", dataEnvelope.getDataHeader().getName());
+        log.info("Data envelope received: {} {}", dataEnvelope.getDataHeader().getName(), dataEnvelope.getDataBody().getDataBody());
 
             boolean checksumPass = server.saveDataEnvelope(dataEnvelope);
 
             log.info("Data envelope persisted. Attribute name: {}", dataEnvelope.getDataHeader().getName());
 
             return ResponseEntity.ok(checksumPass);
-
     }
 
     @GetMapping(value = "/data/{blockType}")
@@ -51,6 +51,13 @@ public class ServerController {
     	log.info("Request for data blocks by block type");
     	List<DataEnvelope> body = server.getDataBodyByBlockType(blockType);
     	return ResponseEntity.ok(body);
+    }
+
+    @PatchMapping(value = "/update/{name}/{newBlockType}")
+    public ResponseEntity<Boolean> patchBlockTypeByBlockName(@NotNull @PathVariable("name") String name, @NotNull @PathVariable("newBlockType") String newBlockType) {
+        log.info("Request for update block type by block name {} {}", name, newBlockType);
+        boolean result = server.updateBlockTypeByBlockName(name, BlockTypeEnum.valueOf(newBlockType));
+        return ResponseEntity.ok(result);
     }
 
 }

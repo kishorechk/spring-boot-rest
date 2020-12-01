@@ -12,4 +12,6 @@ public interface Server {
     boolean saveDataEnvelope(DataEnvelope envelope) throws IOException, NoSuchAlgorithmException;
 
     List<DataEnvelope> getDataBodyByBlockType(BlockTypeEnum blockType);
+
+    boolean updateBlockTypeByBlockName(String blockName, BlockTypeEnum blockType);
 }

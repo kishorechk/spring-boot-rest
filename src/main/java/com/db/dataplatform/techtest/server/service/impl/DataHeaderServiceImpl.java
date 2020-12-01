@@ -23,4 +23,9 @@ public class DataHeaderServiceImpl implements com.db.dataplatform.techtest.serve
 	public List<DataHeaderEntity> getHeaderByBlockType(BlockTypeEnum blockType) {
 		return dataHeaderRepository.findByBlocktype(blockType);
 	}
+
+    @Override
+    public DataHeaderEntity getHeaderByBlockName(String blockName) {
+        return dataHeaderRepository.findByName(blockName);
+    }
 }

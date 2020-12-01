@@ -7,4 +7,5 @@ import com.db.dataplatform.techtest.server.persistence.BlockTypeEnum;
 public interface DataHeaderService {
     void saveHeader(DataHeaderEntity entity);
     List<DataHeaderEntity> getHeaderByBlockType(BlockTypeEnum blockType);
+    DataHeaderEntity getHeaderByBlockName(String blockName);
 }

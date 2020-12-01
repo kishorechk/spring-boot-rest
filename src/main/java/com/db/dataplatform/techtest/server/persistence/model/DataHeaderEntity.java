@@ -38,6 +38,8 @@ public class DataHeaderEntity {
     @Enumerated(EnumType.STRING)
     private BlockTypeEnum blocktype;
 
+    @Column(name = "CHECKSUM")
+    private String checksum;
 
     @Column(name = "CREATED_TIMESTAMP")
     private Instant createdTimestamp;

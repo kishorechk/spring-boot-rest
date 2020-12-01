@@ -35,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -94,8 +95,24 @@ public class ServerControllerComponentTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].dataHeader.name", is(TEST_NAME)))
 				.andExpect(jsonPath("$[0].dataHeader.blockType", is("BLOCKTYPEA")))
-				.andExpect(jsonPath("$[0].dataHeader.bodyMD5Signature", is(MD5_CHECKSUM)))
+				.andExpect(jsonPath("$[0].dataHeader.checksum", is(MD5_CHECKSUM)))
 				.andExpect(jsonPath("$[0].dataBody.dataBody", is(DUMMY_DATA)));
 		verify(serverMock, times(1)).getDataBodyByBlockType(any());
+	}
+
+	@Test
+	public void testUpdateBlockTypeWorksAsExpected() throws Exception {
+		when(serverMock.updateBlockTypeByBlockName(any(), any())).thenReturn(true);
+
+		Map<String,String> uriVariables = new HashMap<>();
+		uriVariables.put("name", TEST_NAME);
+		uriVariables.put("newBlockType", "BLOCKTYPEA");
+
+		MvcResult mvcResult = mockMvc.perform(patch(URI_PATCHDATA.expand(uriVariables)))
+				.andExpect(status().isOk()).andReturn();
+		boolean updated = Boolean.parseBoolean(mvcResult.getResponse().getContentAsString());
+		assertThat(updated).isTrue();
+		verify(serverMock, times(1)).updateBlockTypeByBlockName(any(), any());
+
 	}
 }

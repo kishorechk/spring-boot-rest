@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface DataHeaderRepository extends JpaRepository<DataHeaderEntity, Long> {
-    public List<DataHeaderEntity> findByBlocktype(BlockTypeEnum blocktype); 
+    public List<DataHeaderEntity> findByBlocktype(BlockTypeEnum blocktype);
+    public DataHeaderEntity findByName(String blockName);
 }
